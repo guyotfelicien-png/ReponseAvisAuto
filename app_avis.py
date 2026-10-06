@@ -54,7 +54,7 @@ with st.sidebar:
     st.success("✅ Connexion au serveur IA active")
 
 # --- STRUCTURE EN ONGLETS ---
-tab_traitement, tab_stats, tab_historique = st.tabs(["À traiter", "Statistiques", "Historique"])
+tab_traitement, tab_stats, tab_historique = st.tabs(["🚨 À traiter", "📊 Statistiques", "🗂️ Historique"])
 
 # === ONGLET 1 : GESTION DES AVIS ===
 with tab_traitement:
@@ -88,7 +88,7 @@ with tab_traitement:
                 # --- LOGIQUE HUMAN-IN-THE-LOOP ---
                 if note_saisie >= 3:
                     # Mode Automatique : L'IA a répondu
-                    st.success("**Publié automatiquement :** L'IA a traité cet avis positif.")
+                    st.success("✅ **Publié automatiquement :** L'IA a traité cet avis positif.")
                     st.code(reponse_ia, language=None)
                 else:
                     # Mode Manuel : Alerte rouge pour le gérant
@@ -98,7 +98,7 @@ with tab_traitement:
                     
                     # Le bouton pour valider manuellement
                     if st.button("Publier cette réponse sur Google"):
-                        st.success("La réponse a été validée et envoyée (Simulation).")
+                        st.success("✅ La réponse a été validée et envoyée (Simulation).")
 
 # === ONGLET 2 : STATISTIQUES ===
 with tab_stats:
