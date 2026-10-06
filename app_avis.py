@@ -106,6 +106,3 @@ with tab_stats:
 with tab_historique:
     st.subheader("Historique des réponses publiées")
     st.info("Le tableau de suivi des anciens avis apparaîtra ici.")
-                # Faux bouton de publication pour la démo
-                if st.button("Publier cette réponse sur Google"):
-                    st.success("✅ Réponse validée et publiée !")
