@@ -47,52 +47,65 @@ st.set_page_config(page_title="Générateur d'Avis Pro", page_icon="⭐", layout
 st.title("📱 Tableau de Bord - Gestion des Avis")
 st.markdown("Générez des réponses intelligentes aux avis Google de vos clients.")
 
+# --- BARRE LATÉRALE ---
 with st.sidebar:
     st.header("⚙️ Configuration du commerce")
     cle_api_utilisateur = st.secrets["GEMINI_API_KEY"]
     nom_commerce_utilisateur = st.text_input("Nom de votre commerce", value="Mon Super Commerce")
     st.success("✅ Connexion au serveur IA active")
 
-st.subheader("📥 Nouvel avis reçu")
+# --- NOUVELLE STRUCTURE EN ONGLETS ---
+tab_traitement, tab_stats, tab_historique = st.tabs(["🚨 À traiter", "📊 Statistiques", "🗂️ Historique"])
 
-col1, col2 = st.columns(2)
-with col1:
-    nom_client_saisi = st.text_input("Nom du client", placeholder="Ex: Marie Martin")
-with col2:
-    note_saisie = st.slider("Note sur 5", min_value=1, max_value=5, value=5)
+# === ONGLET 1 : GESTION DES AVIS ===
+with tab_traitement:
+    st.subheader("📥 Nouvel avis reçu")
 
-commentaire_saisi = st.text_area("Commentaire laissé par le client", placeholder="Ex: Super expérience, je recommande !")
+    col1, col2 = st.columns(2)
+    with col1:
+        nom_client_saisi = st.text_input("Nom du client", placeholder="Ex: Marie Martin")
+    with col2:
+        note_saisie = st.slider("Note sur 5", min_value=1, max_value=5, value=5)
 
-if st.button("🚀 Générer la réponse", type="primary"):
-    if not cle_api_utilisateur:
-        st.warning("⚠️ Veuillez entrer une clé API dans la configuration à gauche.")
-    elif not nom_client_saisi or not commentaire_saisi:
-        st.warning("⚠️ Veuillez remplir le nom du client et le commentaire.")
-    else:
-        with st.spinner('Analyse de l\'avis et génération en cours...'):
-            reponse_ia = generer_reponse(
-                nom_client=nom_client_saisi, 
-                note=note_saisie, 
-                commentaire=commentaire_saisi, 
-                nom_commerce=nom_commerce_utilisateur,
-                cle_api=cle_api_utilisateur
-            )
-            
-            st.divider()
-            
-            # --- LOGIQUE HUMAN-IN-THE-LOOP ---
-            if note_saisie >= 3:
-                # Mode Automatique : L'IA a répondu
-                st.success("✅ **Publié automatiquement :** L'IA a traité cet avis positif.")
-                st.text_area("Réponse envoyée :", value=reponse_ia, height=150, disabled=True)
-            else:
-                # Mode Manuel : Alerte rouge pour le gérant
-                st.error("⚠️ **Action requise :** Cet avis critique nécessite votre attention.")
-                st.write("Voici la suggestion de l'IA pour désamorcer la situation. Vous pouvez la modifier avant publication.")
+    commentaire_saisi = st.text_area("Commentaire laissé par le client", placeholder="Ex: Super expérience, je recommande !")
+
+    if st.button("🚀 Générer la réponse", type="primary"):
+        if not cle_api_utilisateur:
+            st.warning("⚠️ Veuillez entrer une clé API dans la configuration à gauche.")
+        elif not nom_client_saisi or not commentaire_saisi:
+            st.warning("⚠️ Veuillez remplir le nom du client et le commentaire.")
+        else:
+            with st.spinner('Analyse de l\'avis et génération en cours...'):
+                reponse_ia = generer_reponse(
+                    nom_client=nom_client_saisi, 
+                    note=note_saisie, 
+                    commentaire=commentaire_saisi, 
+                    nom_commerce=nom_commerce_utilisateur,
+                    cle_api=cle_api_utilisateur
+                )
                 
-                # Zone de texte éditable par le commerçant
-                reponse_finale = st.text_area("Suggestion de réponse (modifiable) :", value=reponse_ia, height=150)
+                st.divider()
                 
+                # --- LOGIQUE HUMAN-IN-THE-LOOP ---
+                if note_saisie >= 3:
+                    # Mode Automatique : L'IA a répondu
+                    st.success("✅ **Publié automatiquement :** L'IA a traité cet avis positif.")
+                    st.code(reponse_ia, language=None) # Remplace le texte grisé
+                else:
+                    # Mode Manuel : Alerte rouge pour le gérant
+                    st.error("⚠️ **Action requise :** Cet avis critique nécessite votre attention.")
+                    st.write("Voici la suggestion de l'IA pour désamorcer la situation. Vous pouvez la modifier avant publication.")
+                    reponse_finale = st.text_area("Suggestion de réponse (modifiable) :", value=reponse_ia, height=150)
+
+# === ONGLET 2 : STATISTIQUES ===
+with tab_stats:
+    st.subheader("Impact et Performances")
+    st.info("Les graphiques de satisfaction et les conversions de la carte NFC apparaîtront ici.")
+
+# === ONGLET 3 : HISTORIQUE ===
+with tab_historique:
+    st.subheader("Historique des réponses publiées")
+    st.info("Le tableau de suivi des anciens avis apparaîtra ici.")
                 # Faux bouton de publication pour la démo
                 if st.button("Publier cette réponse sur Google"):
                     st.success("✅ Réponse validée et publiée !")
