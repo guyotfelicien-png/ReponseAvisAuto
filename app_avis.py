@@ -49,7 +49,7 @@ st.markdown("Générez des réponses intelligentes aux avis Google de vos client
 
 with st.sidebar:
     st.header("⚙️ Configuration du commerce")
-   cle_api_utilisateur = st.secrets["GEMINI_API_KEY"]
+    cle_api_utilisateur = st.secrets["GEMINI_API_KEY"]
     nom_commerce_utilisateur = st.text_input("Nom de votre commerce", value="Mon Super Commerce")
     st.success("✅ Connexion au serveur IA active")
 
