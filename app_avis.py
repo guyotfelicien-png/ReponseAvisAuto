@@ -7,7 +7,6 @@ import requests
 def generer_reponse(nom_client, note, commentaire, nom_commerce, cle_api):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={cle_api}"
     
-    # Ajustement des tons pour être beaucoup plus naturel
     if note >= 4:
         ton = "amical, simple et direct. Comme un vrai commerçant qui remercie de vive voix au comptoir."
     elif note == 3:
@@ -22,8 +21,8 @@ def generer_reponse(nom_client, note, commentaire, nom_commerce, cle_api):
     Rédige la réponse à cet avis. 
     Contraintes strictes :
     - Le ton doit être {ton}
-    - Parle comme un véritable humain. Banni absolument le jargon d'intelligence artificielle, les tournures trop commerciales et les phrases à rallonge.
-    - Si le commentaire du client est très court (ex: 1 ou 2 mots comme "top" ou "super"), ta réponse doit être extrêmement courte (une seule phrase simple, ex: "Merci beaucoup {nom_client}, ravi que ça vous plaise !").
+    - Parle comme un véritable humain. Banni absolument le jargon d'intelligence artificielle.
+    - Si le commentaire du client est très court, ta réponse doit être extrêmement courte.
     - N'ajoute aucun texte avant ou après.
     - Signe avec "L'équipe de {nom_commerce}".
     """
@@ -54,7 +53,7 @@ with st.sidebar:
     nom_commerce_utilisateur = st.text_input("Nom de votre commerce", value="Mon Super Commerce")
     st.success("✅ Connexion au serveur IA active")
 
-# --- NOUVELLE STRUCTURE EN ONGLETS ---
+# --- STRUCTURE EN ONGLETS ---
 tab_traitement, tab_stats, tab_historique = st.tabs(["🚨 À traiter", "📊 Statistiques", "🗂️ Historique"])
 
 # === ONGLET 1 : GESTION DES AVIS ===
@@ -90,12 +89,16 @@ with tab_traitement:
                 if note_saisie >= 3:
                     # Mode Automatique : L'IA a répondu
                     st.success("✅ **Publié automatiquement :** L'IA a traité cet avis positif.")
-                    st.code(reponse_ia, language=None) # Remplace le texte grisé
+                    st.code(reponse_ia, language=None)
                 else:
                     # Mode Manuel : Alerte rouge pour le gérant
                     st.error("⚠️ **Action requise :** Cet avis critique nécessite votre attention.")
                     st.write("Voici la suggestion de l'IA pour désamorcer la situation. Vous pouvez la modifier avant publication.")
                     reponse_finale = st.text_area("Suggestion de réponse (modifiable) :", value=reponse_ia, height=150)
+                    
+                    # Le bouton pour valider manuellement
+                    if st.button("Publier cette réponse sur Google"):
+                        st.success("✅ La réponse a été validée et envoyée (Simulation).")
 
 # === ONGLET 2 : STATISTIQUES ===
 with tab_stats:
